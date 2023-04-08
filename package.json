@@ -9,10 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@svgr/webpack": "^7.0.0",
+    "bootstrap": "^5.2.3",
     "eslint": "8.37.0",
     "eslint-config-next": "13.2.4",
+    "googleapis": "^114.0.0",
     "next": "13.2.4",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "next-auth": "^4.20.1",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.7.2",
+    "react-dom": "18.2.0",
+    "styled-components": "^5.3.9"
   }
 }
