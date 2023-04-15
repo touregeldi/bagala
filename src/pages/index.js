@@ -1,10 +1,28 @@
 import Head from 'next/head'
 import withAuth from "@/hocs/withAuth";
 import {signOut, useSession} from "next-auth/react";
+import Layout from "@/components/Layout";
+import Breadcrumb from "@/components/Breadcrumb";
+import WhitePaper from "@/components/WhitePaper";
+
+function MainPage() {
+    const breadcrumbItems = [
+        { label: 'Courses', link: '/' },
+        { label: 'Course 1', link: '/course/1' },
+    ];
+
+    return (
+        <Layout active={0}>
+            <Breadcrumb items={breadcrumbItems} />
+            <WhitePaper header={<h1>Welcome to the main page header!</h1>}>
+                <p>Welcome to the main page main!</p>
+            </WhitePaper>
+
+        </Layout>
+    );
+}
 
 function Home() {
-    const {data: session} = useSession()
-
   return (
     <>
       <Head>
@@ -13,12 +31,7 @@ function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-          <div>
-              <h1>Welcome, {session.user.name}</h1>
-              <p>You are logged in with {session.user.email}.</p>
-
-              <button onClick={() => signOut('google')}>Sign out</button>
-          </div>
+          <MainPage/>
       </main>
     </>
   )
