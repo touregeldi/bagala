@@ -1,21 +1,94 @@
 import Head from 'next/head'
 import withAuth from "@/hocs/withAuth";
-import {signOut, useSession} from "next-auth/react";
 import Layout from "@/components/Layout";
 import Breadcrumb from "@/components/Breadcrumb";
 import WhitePaper from "@/components/WhitePaper";
+import styled from "styled-components";
+import {useEffect, useState} from "react";
+import axios, {get} from "axios";
+import SingleItem from "@/components/SingleItem";
+import {useRouter} from "next/router";
+
+const schools = ['SEDS', 'SSH', 'SMG', 'SME', 'Graduate']
+
+const Header = styled.div`
+  display: flex;
+  gap: 32px;;
+`
+
+const School = styled.div`
+  font-size: 16px;
+  color: rgba(17, 20, 45, 0.5);
+  font-weight: 700;
+  ${({ active }) => active ? `
+  color: #11142D;
+  ` :``}
+  cursor: pointer;
+`
+
+const MainWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+  gap: 16px;
+`
+
+const mockCourses = [
+    {
+        "name": "CSCI 151",
+        "description": "Computer Science course",
+        "id": 1
+    },
+    {
+        "name": "CSCI 152",
+        "description": "Computer Science course",
+        "id": 2
+    }
+]
+
+export const getBaseUrl = () => 'https://bagala1.herokuapp.com/api/v1'
 
 function MainPage() {
     const breadcrumbItems = [
-        { label: 'Courses', link: '/' },
-        { label: 'Course 1', link: '/course/1' },
-    ];
+        { label: 'Courses', link: '/' }
+    ]
+    const [activeSchool, setActiveSchool] = useState(1)
+    const [data, setData] = useState([])
+    const router = useRouter()
+
+    useEffect(() => {
+        axios.get(`${getBaseUrl()}/courses/${activeSchool}`)
+            .then(res => {
+                setData(res.data)
+                console.log('res', res.data)
+            })
+    }, [activeSchool])
+
+    function onItemClick(id) {
+        router.push('/course-details/' + id + '?schoolName=' + mockCourses.find(item => item.id === id).name)
+    }
 
     return (
         <Layout active={0}>
             <Breadcrumb items={breadcrumbItems} />
-            <WhitePaper header={<h1>Welcome to the main page header!</h1>}>
-                <p>Welcome to the main page main!</p>
+            <WhitePaper header={
+                <Header>
+                    {
+                        schools.map((school, index) =>
+                            <School
+                                key={school}
+                                onClick={() => setActiveSchool(index)}
+                                active={index === activeSchool}
+                            >{school}</School>)
+                    }
+                </Header>
+
+            }>
+                <MainWrapper>
+                    {
+                        mockCourses.map((course, index) => <SingleItem key={index} {...course} onClick={() => onItemClick(course.id)}/>)
+                    }
+                </MainWrapper>
+
             </WhitePaper>
 
         </Layout>

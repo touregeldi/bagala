@@ -8,7 +8,7 @@ const Wrapper = styled.div`
 `
 
 const Header = styled.div`
-  padding: 16px 32px;
+  padding: 32px 30px;
   border-bottom: 1px solid #E1E1FB;
 `
 
