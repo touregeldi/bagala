@@ -15,7 +15,6 @@ const StyledTitle = styled.div`
   font-size: 24px;
     font-weight: 700;
   margin-bottom: 8px;
-  margin-top: 32px;
   text-align: center;
 `
 
