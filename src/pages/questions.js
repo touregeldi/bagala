@@ -16,6 +16,7 @@ import {
 import {mocksAnswered, mocksNew} from "@/data";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import {useRouter} from "next/router";
+import {useSession} from "next-auth/react";
 
 const Header = styled.div`
   display: flex;
@@ -102,6 +103,7 @@ function Questions() {
     const showModal = () => {
         setOpen(true);
     };
+    const user = useSession()
 
     const handleOk = () => {
         if (modalText === '' || modalDescription === '') {
@@ -115,6 +117,7 @@ function Questions() {
                 "name": modalText,
                 "description": modalDescription,
                 "id": generateRandomId(),
+                "author": user.data.user.name,
                 "answers": []
             }])
             setOpen(false);

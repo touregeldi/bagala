@@ -51,6 +51,22 @@ const StyledButton = styled.button`
   cursor: pointer;
 `
 
+const Header = styled.div`
+    display: flex;
+    justify-content: space-between;
+`
+const Name = styled.div`
+    font-size: 16px;
+  font-weight: 700;
+`
+
+const LocalName = styled.div`
+  background: #CCE9FE;
+  padding: 8px;
+    border-radius: 8px;
+`
+
+
 export const getStaticPaths = async () => ({
     paths: [],
     fallback: 'blocking',
@@ -242,6 +258,7 @@ function QuestionDetails() {
             upvote: 0,
             downvote: 0,
             difference: 0,
+            author: session.data.user.name
         };
 
         const updatedAnswers = [...answers, newAnswer];
@@ -264,7 +281,11 @@ function QuestionDetails() {
     };
 
     return question ? <Layout active={1}>
-        <StyledTitle>{question.name}</StyledTitle>
+        <Header>
+            <StyledTitle>{question.name}</StyledTitle>
+            <Name><LocalName>{question.author}</LocalName></Name>
+        </Header>
+
         <WhitePaper
             header={
                 <SingleQuestion description={question.description} />
@@ -278,6 +299,7 @@ function QuestionDetails() {
                     number={answer.difference}
                     handleDownVote={() => handleDownvote(answer.id)}
                     handleUpVote={() => handleUpvote(answer.id)}
+                    author={answer.author}
                 />))}
 
                 <Form>
@@ -299,39 +321,6 @@ function QuestionDetails() {
             </MainWrapper>
         </WhitePaper>
     </Layout> : 'loading'
-
-    // return (
-    //     <div>
-    //         {question && (
-    //             <>
-    //                 <h1>{question.name}</h1>
-    //                 <p>{question.description}</p>
-    //                 <h2>Answers</h2>
-    //                 {answers.map((answer) => (
-    //                     <div key={answer.id}>
-    //                         <h3>{answer.title}</h3>
-    //                         <p>{answer.description}</p>
-    //                         <p>Upvotes: {answer.upvote}</p>
-    //                         <p>Downvotes: {answer.downvote}</p>
-    //                         <p>Difference: {answer.difference}</p>
-    //                         <button onClick={() => handleUpvote(answer.id)}>Upvote</button>
-    //                         <button onClick={() => handleDownvote(answer.id)}>Downvote</button>
-    //                     </div>
-    //                 ))}
-    //                 <form onSubmit={handleSubmit}>
-    //                     <label htmlFor="newAnswer">Add an answer:</label>
-    //                     <textarea
-    //                         id="newAnswer"
-    //                         value={newAnswer}
-    //                         onChange={(e) => setNewAnswer(e.target.value)}
-    //                         required
-    //                     />
-    //                     <button type="submit">Submit</button>
-    //                 </form>
-    //             </>
-    //         )}
-    //     </div>
-    // );
 }
 
 export default QuestionDetails;

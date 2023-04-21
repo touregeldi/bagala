@@ -34,19 +34,41 @@ const TitleWrapper = styled.div`
     gap: 16px;
 `
 
-function SingleAnswer({name, description, number, handleUpVote, handleDownVote }) {
+const Header = styled.div`
+    display: flex;
+    justify-content: space-between;
+`
+
+const Name = styled.div`
+    font-size: 16px;
+  font-weight: 700;
+  display: flex;
+    align-items: center;
+`
+
+const LocalName = styled.div`
+  background: #CCE9FE;
+  padding: 8px;
+    border-radius: 8px;
+`
+
+function SingleAnswer({name, description, number, handleUpVote, handleDownVote, author }) {
     return (
         <Wrapper
             layout
         >
-            <TitleWrapper>
-                <Logos>
-                    <UpLogo onClick={handleUpVote}/>
-                    <div>{number}</div>
-                    <DownLogo onClick={handleDownVote}/>
-                </Logos>
-                <Title>{name}</Title>
-            </TitleWrapper>
+            <Header>
+                <TitleWrapper>
+                    <Logos>
+                        <UpLogo onClick={handleUpVote}/>
+                        <div>{number}</div>
+                        <DownLogo onClick={handleDownVote}/>
+                    </Logos>
+                    <Title>{name}</Title>
+                </TitleWrapper>
+                <Name><LocalName>{author}</LocalName></Name>
+            </Header>
+
 
             <Description>{description}</Description>
         </Wrapper>
