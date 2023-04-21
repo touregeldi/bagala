@@ -45,13 +45,13 @@ const mockCourses = [
     }
 ]
 
-export const getBaseUrl = () => 'https://bagala1.herokuapp.com/api/v1'
+export const getBaseUrl = () => 'http://127.0.0.1:8000/api/v1'
 
 function MainPage() {
     const breadcrumbItems = [
         { label: 'Courses', link: '/' }
     ]
-    const [activeSchool, setActiveSchool] = useState(1)
+    const [activeSchool, setActiveSchool] = useState(0)
     const [data, setData] = useState([])
     const router = useRouter()
 
@@ -64,7 +64,7 @@ function MainPage() {
     }, [activeSchool])
 
     function onItemClick(id) {
-        router.push('/course-details/' + id + '?schoolName=' + mockCourses.find(item => item.id === id).name)
+        router.push('/course-details/' + id + '?schoolName=' + data.find(item => item.id === id).name)
     }
 
     return (
@@ -79,13 +79,14 @@ function MainPage() {
                                 onClick={() => setActiveSchool(index)}
                                 active={index === activeSchool}
                             >{school}</School>)
-                    }
+                    }   
                 </Header>
 
             }>
                 <MainWrapper>
+                    
                     {
-                        mockCourses.map((course, index) => <SingleItem key={index} {...course} onClick={() => onItemClick(course.id)}/>)
+                        data.map((course, index) => <SingleItem key={index} {...course} onClick={() => onItemClick(course.id)}/>)
                     }
                 </MainWrapper>
 

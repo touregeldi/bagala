@@ -18,14 +18,14 @@ export default NextAuth({
     ],
     callbacks: {
         async signIn({ account, profile, user }) {
-            const isAllowed = profile.email.endsWith('@nu.edu.kz');
+           // const isAllowed = profile.email.endsWith('@nu.edu.kz');
 
-            if (!isAllowed) {
+           // if (!isAllowed) {
                 // user.error = 'Access denied. Please sign in with an @nu.edu.kz email address.';
-                return '/login?error=true'
-            }
+               // return '/login?error=true'
+           // }
 
-            return isAllowed;
+            return true;
         }
     },
 });

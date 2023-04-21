@@ -9,6 +9,7 @@ import WhitePaper from "@/components/WhitePaper";
 import SingleItem from "@/components/SingleItem";
 import styled from "styled-components";
 import {Dropdown, Modal, Space} from "antd";
+import { getPageFiles } from "next/dist/server/get-page-files";
 
 const Header = styled.div`
   display: flex;
@@ -165,6 +166,20 @@ const ModalHeader = styled.div`
 
 `
 
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
 function Questions() {
     const router = useRouter()
     const { id, schoolName } = router.query
@@ -181,19 +196,20 @@ function Questions() {
         key: index
     }))
     const inputRef = useRef()
-
+    const filename = useRef()
     const handleFileSelect = () => {
         inputRef.current.click()
 
     }
     useEffect(() => {
-        // axios.get(`${getBaseUrl()}/course/${id}`)
-        //     .then(res => {
-        //         setData(res.data)
-        //         console.log('res', res.data)
-        //     })
-        setData(mocks)
-    }, [])
+        if(!id && id!==0) return  
+        axios.get(`${getBaseUrl()}/courses/course/${id}`).
+            then(res => {
+                 setData(res.data)
+                console.log('res', res.data)
+            })
+        console.log('id from effect: ', id)
+    }, [id])
 
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -208,6 +224,39 @@ function Questions() {
             error()
             return
         }
+    function download_file(id) {
+       axios.get(`${getBaseUrl()}/courses/course/${id}`, { params: { file_id: id } }).then((res => Response.blob()));
+                
+    }
+
+   
+
+    const formData = new FormData();
+    const file = inputRef.current.files[0]
+    
+    formData.append("content", file);
+    formData.append("name", modalText)
+    formData.append("date_uploaded", formatDate('Sun May 11,2014') )
+    formData.append("parent_course", id )
+    formData.append("parent_course_category", formActiveCategory )
+
+
+    axios.post(`${getBaseUrl()}/courses/upload_file`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+}).then(() =>
+
+
+    axios.get(`${getBaseUrl()}/courses/course/${id}`).
+    then(res => {
+     setData(res.data)
+    console.log('res', res.data)
+}))
+            
+   
+
+
         setOpen(false);
     };
 
@@ -256,7 +305,7 @@ function Questions() {
                         <ModalWrapper>
                             <NameInputWrapper>
                                 <label>Write the name of the file</label>
-                                <NameInput type={'text'} placeholder={'File Name'} value={modalText} onChange={(e) =>setModalText(e.target.value) }/>
+                                <NameInput type={'text'} ref = {filename} placeholder={'File Name'} value={modalText} onChange={(e) =>setModalText(e.target.value) }/>
                             </NameInputWrapper>
 
                             <div>
@@ -296,7 +345,7 @@ function Questions() {
             }>
                 <MainWrapper>
                     {
-                        mocks.filter(item => item.parent_course_category === activeCategory).map((course, index) => <SingleItem key={index} {...course} description={course.date_uploaded} onClick={() => {}}/>)
+                       data ?  data.filter(item => item.parent_course_category === activeCategory).map((course, index) => <SingleItem key={index} {...course} description={course.date_uploaded} onClick={download_file}/>) : 'loading'
                     }
                 </MainWrapper>
 
