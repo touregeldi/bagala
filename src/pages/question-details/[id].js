@@ -50,6 +50,11 @@ const StyledButton = styled.button`
   cursor: pointer;
 `
 
+export const getStaticPaths = async () => ({
+    paths: [],
+    fallback: 'blocking',
+})
+
 function QuestionDetails() {
     const router = useRouter();
     const { id } = router.query;
