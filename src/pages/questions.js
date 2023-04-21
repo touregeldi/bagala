@@ -15,7 +15,6 @@ import {
 } from "@/pages/course-details/[id]";
 import {mocksAnswered, mocksNew} from "@/data";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import {router} from "next/client";
 import {useRouter} from "next/router";
 
 const Header = styled.div`

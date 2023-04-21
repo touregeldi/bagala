@@ -9,6 +9,7 @@ import styled from "styled-components";
 import SingleAnswer from "@/components/SingleAnswer";
 import {generateRandomId} from "@/pages/questions";
 import {Modal} from "antd";
+import {useSession} from "next-auth/react";
 
 const StyledTitle = styled.div`
   font-size: 24px;
@@ -55,6 +56,13 @@ export const getStaticPaths = async () => ({
     fallback: 'blocking',
 })
 
+export const getStaticProps = async ({ params }) => {
+    return {
+        props: {
+        }
+    }
+}
+
 function QuestionDetails() {
     const router = useRouter();
     const { id } = router.query;
@@ -90,39 +98,92 @@ function QuestionDetails() {
         return answers.sort((a, b) => b.difference - a.difference);
     };
 
+    const session = useSession();
+
     const handleUpvote = (answerId) => {
-        const updatedAnswers = answers.map((answer) => {
-            if (answer.id === answerId) {
-                return {
-                    ...answer,
-                    upvote: answer.upvote + 1,
-                    difference: answer.difference + 1,
-                };
-            }
-            return answer;
-        });
+        if (session.status === "authenticated") {
+            const userId = session.data.user.id;
 
-        setAnswers(updatedAnswers);
+            const updatedAnswers = answers.map((answer) => {
+                if (answer.id === answerId) {
+                    const previousVote = answer?.voters?.[userId] || 0;
 
-        updateLocalStorage(updatedAnswers);
+                    let newUpvote = answer.upvote;
+                    let newDifference = answer.difference;
+
+                    if (previousVote === 1) {
+                        newUpvote -= 1;
+                        newDifference -= 1;
+                    } else {
+                        newUpvote += 1;
+                        newDifference += 1;
+                        if (previousVote === -1) {
+                            newDifference += 1;
+                        }
+                    }
+
+                    return {
+                        ...answer,
+                        upvote: newUpvote,
+                        difference: newDifference,
+                        voters: {
+                            ...answer.voters,
+                            [userId]: previousVote === 1 ? 0 : 1,
+                        },
+                    };
+                }
+                return answer;
+            });
+
+            setAnswers(updatedAnswers);
+            updateLocalStorage(updatedAnswers);
+        } else {
+            signIn();
+        }
     };
 
     const handleDownvote = (answerId) => {
-        const updatedAnswers = answers.map((answer) => {
-            if (answer.id === answerId) {
-                return {
-                    ...answer,
-                    downvote: answer.downvote + 1,
-                    difference: answer.difference - 1,
-                };
-            }
-            return answer;
-        });
+        if (session.status === "authenticated") {
+            const userId = session.data.user.id;
 
-        setAnswers(updatedAnswers);
+            const updatedAnswers = answers.map((answer) => {
+                if (answer.id === answerId) {
+                    const previousVote = answer?.voters?.[userId] || 0;
 
-        updateLocalStorage(updatedAnswers);
+                    let newDownvote = answer.downvote;
+                    let newDifference = answer.difference;
+
+                    if (previousVote === -1) {
+                        newDownvote -= 1;
+                        newDifference += 1;
+                    } else {
+                        newDownvote += 1;
+                        newDifference -= 1;
+                        if (previousVote === 1) {
+                            newDifference -= 1;
+                        }
+                    }
+
+                    return {
+                        ...answer,
+                        downvote: newDownvote,
+                        difference: newDifference,
+                        voters: {
+                            ...answer.voters,
+                            [userId]: previousVote === -1 ? 0 : -1,
+                        },
+                    };
+                }
+                return answer;
+            });
+
+            setAnswers(updatedAnswers);
+            updateLocalStorage(updatedAnswers);
+        } else {
+            signIn();
+        }
     };
+
 
     const updateLocalStorage = (updatedAnswers) => {
         const sortedAnswers = sortByDifference(updatedAnswers);
@@ -150,7 +211,11 @@ function QuestionDetails() {
                 return storedQuestion;
             });
 
-            setStoredAnswered(updatedQuestions);
+            const newStoredAnswered = [...updatedQuestions];
+            if (!newStoredAnswered.some((q) => q.id === question.id)) {
+                newStoredAnswered.push(question);
+            }
+            setStoredAnswered(newStoredAnswered);
         }
     };
 
@@ -184,8 +249,19 @@ function QuestionDetails() {
         updateLocalStorage(updatedAnswers);
         setAnswerTitle("");
         setAnswerDescription("");
-    };
 
+        // Move question from storedNew to storedAnswered
+        const foundQuestionIndex = storedNew.findIndex((item) => item.id == id);
+        if (foundQuestionIndex > -1) {
+            const foundQuestion = storedNew[foundQuestionIndex];
+            const updatedNewQuestions = [...storedNew];
+            updatedNewQuestions.splice(foundQuestionIndex, 1);
+            setStoredNew(updatedNewQuestions);
+
+            const updatedAnsweredQuestions = [...storedAnswered, { ...foundQuestion, answers: updatedAnswers }];
+            setStoredAnswered(updatedAnsweredQuestions);
+        }
+    };
 
     return question ? <Layout active={1}>
         <StyledTitle>{question.name}</StyledTitle>
