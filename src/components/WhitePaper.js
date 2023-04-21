@@ -3,7 +3,6 @@ import styled from 'styled-components';
 const Wrapper = styled.div`
     background: white;
   width: 100%;
-  height: 100%;
     border-radius: 8px;
 `
 
@@ -19,9 +18,9 @@ const Main = styled.div`
 function WhitePaper ({ children, header }) {
   return (
     <Wrapper>
-        <Header>
+        {header && <Header>
             {header}
-        </Header>
+        </Header>}
         <Main>
             {children}
         </Main>

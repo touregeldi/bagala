@@ -72,6 +72,12 @@ const StyledGoogleImage = styled(GoogleImage)`
   margin-right: 1rem;
 `
 
+export async function getStaticProps(context) {
+    return {
+        props: {}, // will be passed to the page component as props
+    }
+}
+
 const LoginPage = () => {
     const { data: session, status } = useSession();
 

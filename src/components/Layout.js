@@ -6,8 +6,6 @@ import QuestionIcon from '../assets/question.svg';
 import RecommendationIcon from '../assets/like.svg';
 import Link from "next/link";
 import {useSession} from "next-auth/react";
-import Image from "next/image";
-import userImage from '../assets/User-photo.png'
 
 
 const MainWrapper = styled.div`
@@ -20,6 +18,7 @@ const Main = styled.div`
     padding: 32px;
   color: #5D5C5C;
   width: 100%;
+  position: relative;
 `
 
 const TopBar = styled.div`
@@ -96,7 +95,6 @@ const Layout = ({ children, active }) => {
                     </LogoWrapper>
                 </Link>
                 <UserWrapper>
-                    <Image src={userImage} alt={'user image'} width={40} height={40}/>
                     <div>
                         <UserName>{userName}</UserName>
                         <UserEmail>{userEmail}</UserEmail>

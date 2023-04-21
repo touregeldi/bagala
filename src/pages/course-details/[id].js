@@ -77,7 +77,7 @@ const School = styled.div`
   cursor: pointer;
 `
 
-const ButtonNewFile = styled.div`
+export const ButtonNewFile = styled.div`
   width: 115px;
   font-size: 16px;
   background: #0D8BFF;
@@ -94,13 +94,13 @@ const ButtonNewFile = styled.div`
   }
 `
 
-const HeaderWrapper = styled.div`
+export const HeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
     align-items: center;
 `
 
-const StyledSpace = styled(Space)`
+export const StyledSpace = styled(Space)`
     width: 100%;
   border: 1px solid #D1D1D1;
   height: 44px;
@@ -112,13 +112,13 @@ const StyledSpace = styled(Space)`
     justify-content: space-between;
 `
 
-const ModalWrapper = styled.div`
+export const ModalWrapper = styled.div`
     display: flex;
     flex-direction: column;
   gap: 16px;
 `
 
-const FileSelectWrapper = styled.div`
+export const FileSelectWrapper = styled.div`
   width: 100%;
   display: flex;
     justify-content: center;
@@ -128,7 +128,7 @@ const FileSelectWrapper = styled.div`
     border-radius: 8px;
 `
 
-const FileSelectContainer = styled.div`
+export const FileSelectContainer = styled.div`
   border: 1px solid #ccc;
   display: inline-block;
   padding: 6px 12px;
@@ -138,11 +138,11 @@ const FileSelectContainer = styled.div`
   color: white;
 `
 
-const FileSelect = styled.input`
+export const FileSelect = styled.input`
   display: none;
 `
 
-const NameInput = styled.input`
+export const NameInput = styled.input`
     width: 100%;
   height: 44px;
   left: 0px;
@@ -152,11 +152,11 @@ const NameInput = styled.input`
   border: 1px solid #D1D1D1;
 `
 
-const NameInputWrapper = styled.div`
+export const NameInputWrapper = styled.div`
     
 `
 
-const ModalHeader = styled.div`
+export const ModalHeader = styled.div`
   font-size: 20px;
   font-weight: 600;
   line-height: 24px;
@@ -172,9 +172,9 @@ function formatDate(date) {
         day = '' + d.getDate(),
         year = d.getFullYear();
 
-    if (month.length < 2) 
+    if (month.length < 2)
         month = '0' + month;
-    if (day.length < 2) 
+    if (day.length < 2)
         day = '0' + day;
 
     return [year, month, day].join('-');
@@ -199,10 +199,10 @@ function Questions() {
     const filename = useRef()
     const handleFileSelect = () => {
         inputRef.current.click()
-
     }
+
     useEffect(() => {
-        if(!id && id!==0) return  
+        if(!id && id!==0) return
         axios.get(`${getBaseUrl()}/courses/course/${id}`).
             then(res => {
                  setData(res.data)
@@ -226,14 +226,14 @@ function Questions() {
         }
     function download_file(id) {
        axios.get(`${getBaseUrl()}/courses/course/${id}`, { params: { file_id: id } }).then((res => Response.blob()));
-                
+
     }
 
-   
+
 
     const formData = new FormData();
     const file = inputRef.current.files[0]
-    
+
     formData.append("content", file);
     formData.append("name", modalText)
     formData.append("date_uploaded", formatDate('Sun May 11,2014') )
@@ -253,8 +253,8 @@ function Questions() {
      setData(res.data)
     console.log('res', res.data)
 }))
-            
-   
+
+
 
 
         setOpen(false);
@@ -271,8 +271,6 @@ function Questions() {
             content: 'Fill all the fields',
         });
     };
-
-
 
     return (
         <Layout active={0}>
