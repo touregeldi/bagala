@@ -14,7 +14,9 @@ import {useSession} from "next-auth/react";
 const StyledTitle = styled.div`
   font-size: 24px;
     font-weight: 700;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
+  margin-top: 32px;
+  text-align: center;
 `
 
 const MainWrapper = styled.div`
@@ -26,7 +28,7 @@ const MainWrapper = styled.div`
 const Form = styled.div`
     display: flex;
     flex-direction: column;
-  gap: 8px;
+  gap: 16px;
 `
 
 const StyledTextarea = styled.textarea`
@@ -46,7 +48,7 @@ const StyledButton = styled.button`
   color: #fff;
     border-radius: 8px;
   width: 60%;
-  margin: 0 auto;
+  margin: 8px auto;
     padding: 14px 16px 14px 16px;
   cursor: pointer;
 `
